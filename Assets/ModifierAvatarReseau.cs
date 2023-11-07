@@ -76,10 +76,13 @@ public class ModifierAvatarReseau : NetworkBehaviour
         _nomAvatar.OnValueChanged += (x, y) => UpdateAvatarFromData(_teteIndex.Value, _bodyIndex.Value, _couleurAvatar.Value, y);
     }
 
-    //public override void OnNetworkDespawn()
-    //{
-    //    avatarReseauData.OnValueChanged -= (x, y) => UpdateAvatarFromData(y);
-    //}
+    public override void OnNetworkDespawn()
+    {
+        _teteIndex.OnValueChanged -= (x, y) => UpdateAvatarFromData(y, _bodyIndex.Value, _couleurAvatar.Value, _nomAvatar.Value);
+        _bodyIndex.OnValueChanged -= (x, y) => UpdateAvatarFromData(_teteIndex.Value, y, _couleurAvatar.Value, _nomAvatar.Value);
+        _couleurAvatar.OnValueChanged -= (x, y) => UpdateAvatarFromData(_teteIndex.Value, _bodyIndex.Value, y, _nomAvatar.Value);
+        _nomAvatar.OnValueChanged -= (x, y) => UpdateAvatarFromData(_teteIndex.Value, _bodyIndex.Value, _couleurAvatar.Value, y);
+    }
 
     // Méthode utilisé pout créer un Avatar aléatoire au départ
     //public AvatarReseauData CreerAvatarAleatoire()
