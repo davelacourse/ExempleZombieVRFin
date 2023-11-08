@@ -54,10 +54,8 @@ public class UIManagerLobby : MonoBehaviour
     // Cette méthode est appeler par tous les clients et l'host lors de la déconnexion
     private void OnClientDisconnected(ulong obj)
     {
-        Debug.Log(" Se déconnecte");
         if (!NetworkManager.Singleton.IsServer)
         {
-            Debug.Log("Lancer QUitterLobby");
             QuitterLobbyUI();
         }
     }
@@ -74,7 +72,6 @@ public class UIManagerLobby : MonoBehaviour
         // si oui active le panneau de la salle d'attente
         if (obj == NetworkManager.Singleton.LocalClientId)
         {
-            Debug.Log(NetworkManager.Singleton.LocalClientId);
             ActiverUI(4);
         }
     }

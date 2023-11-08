@@ -47,6 +47,18 @@ public class ZombieNetwork : NetworkBehaviour  //change l'héritage pour le beha
     {
         if (IsServer)
         {
+            // Trouve le joueur le plus près du zombie et ce joueur devient le target
+            float minDistance = float.MaxValue;
+            foreach(var p in _players)
+            {
+                float distance = Vector3.Distance(p.transform.position,transform.position);
+                if(distance < minDistance)
+                {
+                    minDistance = distance;
+                    target = p.RootAvatar;
+                }
+            }
+
             agent.SetDestination(target.position);
 
             

@@ -20,7 +20,6 @@ public class UIManagerFin : MonoBehaviour
     [SerializeField] private Button _retourCreerButton = default;
     [SerializeField] private Button _retourSalleAttente = default;
 
-
     private void Start()
     {
         ActiverUI(3);

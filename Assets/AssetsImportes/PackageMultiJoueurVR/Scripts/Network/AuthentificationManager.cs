@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine.Events;
+using Unity.Services.Vivox;
 
 // Pour tester en local avec ParrelSync on ajoute la librairie
 #if UNITY_EDITOR
@@ -43,13 +44,13 @@ public class AuthentificationManager : MonoBehaviour
         // await nous assure que l'initialisation est terminé avant de poursuivre
         // ici je passe les options à l'initialisation pour savoir s'il s'agit du 
         // clone ou non
-        if(UnityServices.State == ServicesInitializationState.Uninitialized)
-        {
 
-        }
         await UnityServices.InitializeAsync(options);
         // même principe pour le signin
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
         SignIn?.Invoke();  // Déclenche l'évènement SignIn
+
+        VivoxService.Instance.Initialize();
+        VivoxVoiceManager.Instance.Login();
     }
 }

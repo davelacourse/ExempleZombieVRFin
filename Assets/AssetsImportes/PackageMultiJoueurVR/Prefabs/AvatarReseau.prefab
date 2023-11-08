@@ -2234,6 +2234,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a18144555ebb0f428d29af15c30448e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selectionPersonnage: {fileID: 3638034536753826271, guid: 9f892500d32c3844abcfa8fddffceff1,
+    type: 3}
   _optionsTete:
   - {fileID: 5097290893108312830}
   - {fileID: 1760704293395358076}

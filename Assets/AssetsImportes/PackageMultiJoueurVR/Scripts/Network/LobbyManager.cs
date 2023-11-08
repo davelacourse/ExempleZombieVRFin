@@ -18,11 +18,26 @@ public class LobbyManager : MonoBehaviour
 
     public UnityEvent OnStartJoindreLobby;  //Évènement qui se déclenche quand je rejoins un serveur
     public UnityEvent OnFailedJoindreLobby;  //Évènement qui se déclenche quand la connexion échoue
+    public UnityEvent OnFinishJoinLobby;
+    public UnityEvent OnLeaveLobby;
     
     // Singleton
     private void Awake()
     {
         Instance = this;
+
+        OnFinishJoinLobby.AddListener(JoinVivoxChannel);
+        OnLeaveLobby.AddListener(LeaveVivoxChannel);
+    }
+
+    public void JoinVivoxChannel()
+    {
+        VivoxVoiceManager.Instance.JoinChannel(_currentLobby.Id, VivoxUnity.ChannelType.NonPositional, VivoxVoiceManager.ChatCapability.AudioOnly);
+    }
+
+    public void LeaveVivoxChannel()
+    {
+        VivoxVoiceManager.Instance.DisconnectAllChannels();
     }
 
     private async void Update()
@@ -59,7 +74,6 @@ public class LobbyManager : MonoBehaviour
                     // Mets à jour le Lobby
                     _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
                 }
-                
             }
         }
         _updateLobbyTimer += Time.deltaTime;
@@ -96,6 +110,8 @@ public class LobbyManager : MonoBehaviour
 
             // Je créer le Lobby sur le Relay
             _currentLobby = await Lobbies.Instance.CreateLobbyAsync(lobbyData.lobbyName, lobbyData.maxPlayer, lobbyOptions);
+
+            OnFinishJoinLobby.Invoke();
         }
         // Si une erreur survient je déclence l'évènement OnFailJoindreLobby
         catch(System.Exception e)
@@ -122,6 +138,8 @@ public class LobbyManager : MonoBehaviour
             
             // Rejoint le lobby avec le joinCode récupéré
             RelayManager.Instance.JoinRelayGame(relayJoinCode);
+
+            OnFinishJoinLobby.Invoke();
         }
         // Si une erreur survient je déclence l'évènement OnFailJoindreLobby
         catch (System.Exception e)
@@ -146,6 +164,8 @@ public class LobbyManager : MonoBehaviour
             
             // Rejoint le lobby avec le joinCode récupéré
             RelayManager.Instance.JoinRelayGame(relayJoinCode);
+
+            OnFinishJoinLobby.Invoke();
         }
         // Si une erreur survient je déclence l'évènement OnFailJoindreLobby
         catch (System.Exception e)
@@ -188,7 +208,6 @@ public class LobbyManager : MonoBehaviour
         
         if (NetworkManager.Singleton)
         {
-            Debug.Log("Test !!!!");
             NetworkManager.Singleton.Shutdown(); // Permet de nous déconnecteur du réseau
         }
 
@@ -198,9 +217,10 @@ public class LobbyManager : MonoBehaviour
             string id = _currentLobby.Id; //si oui on note son id
             _currentLobby = null; // on place sa valeur à null se quitte termine l'envoi de signal
             // Enlève le joueur du Lobby
-            Debug.Log("Déconnecte le joueur # : " + AuthenticationService.Instance.PlayerId);
             await Lobbies.Instance.RemovePlayerAsync(id, AuthenticationService.Instance.PlayerId);
-        }
+
+            OnLeaveLobby.Invoke();
+}
     }
 }
 
